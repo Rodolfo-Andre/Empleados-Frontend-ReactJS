@@ -1,21 +1,11 @@
 import ReactPaginate from "react-paginate";
+import { handleSearchParams } from "../helpers";
 
 const PaginationCrud = ({ pagination, searchParams, setSearchParams }) => {
   const { current_page, num_pages, count } = pagination;
 
   const handlePageClick = ({ selected }) => {
-    let search = searchParams.get("search");
-
-    if (search) {
-      setSearchParams({
-        page: selected + 1,
-        search,
-      });
-    } else {
-      setSearchParams({
-        page: selected + 1,
-      });
-    }
+    handleSearchParams(searchParams, setSearchParams, selected + 1);
   };
 
   return (

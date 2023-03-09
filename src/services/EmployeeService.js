@@ -11,7 +11,7 @@ export default class EmployeeService {
           .then((res) => {
             callback();
 
-            let successMessage = {
+            const successMessage = {
               message: "✓ Empleado registrado satisfactoriamente.",
               className: ["message", "message-success"],
             };
@@ -19,7 +19,7 @@ export default class EmployeeService {
             setMessage(successMessage);
           })
           .catch((err) => {
-            let errorMessage = {
+            const errorMessage = {
               message: "✘ Error al registrar empleado, Vuelve a intentarlo.",
               className: ["message", "message-error"],
             };
@@ -35,7 +35,7 @@ export default class EmployeeService {
           .then((res) => {
             callback();
 
-            let successMessage = {
+            const successMessage = {
               message: "✓ Empleado modificado satisfactoriamente.",
               className: ["message", "message-success"],
             };
@@ -43,7 +43,7 @@ export default class EmployeeService {
             setMessage(successMessage);
           })
           .catch((err) => {
-            let errorMessage = {
+            const errorMessage = {
               message: "✘ Error al modificar empleado, Vuelve a intentarlo.",
               className: ["message", "message-error"],
             };
@@ -59,7 +59,7 @@ export default class EmployeeService {
           .then(() => {
             callback();
 
-            let successMessage = {
+            const successMessage = {
               message: "✓ Empleado eliminado satisfactoriamente.",
               className: ["message", "message-success"],
             };
@@ -67,7 +67,7 @@ export default class EmployeeService {
             setMessage(successMessage);
           })
           .catch((err) => {
-            let errorMessage = {
+            const errorMessage = {
               message: "✘ Error al eliminar empleado, Vuelve a intentarlo.",
               className: ["message", "message-error"],
             };
@@ -76,8 +76,6 @@ export default class EmployeeService {
 
             console.log(err);
           });
-        break;
-      default:
         break;
     }
   }

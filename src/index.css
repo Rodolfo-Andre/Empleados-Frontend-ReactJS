@@ -344,6 +344,29 @@ a {
   font-size: 2rem;
 }
 
+.error-page {
+  max-width: 700px;
+  margin: auto 2rem;
+}
+
+.error-page > :not(a) {
+  text-align: center;
+}
+
+.error-page > div > img {
+  height: clamp(200px, 20vw + 240px, 500px);
+  object-fit: contain;
+  width: 100%;
+  max-width: 100%;
+}
+
+.content-center {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /*------------ Utilidades ------------*/
 .bg-black {
   background-color: #343a40;

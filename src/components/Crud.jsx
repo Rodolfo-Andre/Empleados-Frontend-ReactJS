@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../App";
 import Employee from "../class/Employee";
 import axiosObject from "../ConfigAxios";
@@ -10,33 +10,34 @@ import Message from "./Message";
 import PaginationCrud from "./PaginationCrud";
 import SearchCrud from "./SearchCrud";
 import TableCrud from "./TableCrud";
+import { redirectToIndex, handleSearchParams } from "../helpers";
+import ErrorSearch from "./ErrorSearch";
 
-function Crud() {
-  let [searchParams, setSearchParams] = useSearchParams();
-  const [data, setData] = useState([]);
-  const [loader, setLoader] = useState(false);
-  const [dataToEdit, setDataToEdit] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
-  const { auth } = useContext(AuthContext);
-  const [pagination, setPagination] = useState(null);
-  const navigate = useNavigate();
+const Crud = () => {
+  const [searchParams, setSearchParams] = useSearchParams(),
+    [data, setData] = useState([]),
+    [loader, setLoader] = useState(false),
+    [dataToEdit, setDataToEdit] = useState(null),
+    [message, setMessage] = useState(null),
+    [error, setError] = useState(null),
+    [pagination, setPagination] = useState(null),
+    { auth } = useContext(AuthContext),
+    navigate = useNavigate();
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     setLoader(true);
 
-    let query = searchParams.get("page");
-    let search = searchParams.get("search");
+    const query = searchParams.get("page"),
+      search = searchParams.get("search");
 
     try {
-      let dataAxios = await axiosObject.get(
-        `employee/${query ? "?page=" + query : ""}${
-          search ? "&search=" + search : ""
-        }`
-      );
-
-      const listEmployee = dataAxios.data.results.map((e) => new Employee(e));
-      const configPagination = dataAxios.data.pagination;
+      const dataAxios = await axiosObject.get(
+          `employee/${query ? "?page=" + query : ""}${
+            search ? "&search=" + search : ""
+          }`
+        ),
+        listEmployee = dataAxios.data.results.map((e) => new Employee(e)),
+        configPagination = dataAxios.data.pagination;
 
       setData(listEmployee);
       setPagination(configPagination);
@@ -52,13 +53,11 @@ function Crud() {
 
       console.log(err);
     }
-  }, [searchParams]);
+  };
 
   useEffect(() => {
-    if (!auth) {
-      navigate("/");
-    }
-  }, [auth, navigate]);
+    isNotAuthenticated();
+  }, []);
 
   useEffect(() => {
     if (message) {
@@ -70,7 +69,13 @@ function Crud() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [searchParams]);
+
+  const isNotAuthenticated = () => {
+    if (!auth) {
+      redirectToIndex(navigate);
+    }
+  };
 
   const post = (employee) => {
     const options = {
@@ -103,7 +108,7 @@ function Crud() {
   };
 
   const del = ({ id, first_name, last_name }) => {
-    let confirmDelete = window.confirm(
+    const confirmDelete = window.confirm(
       `¿Estas seguro de eliminar a ${first_name} ${last_name}?`
     );
 
@@ -115,21 +120,21 @@ function Crud() {
           setMessage,
           callback: () => {
             const { current_page, count_per_page, num_pages } = pagination;
-            let search = searchParams.get("search");
 
             if (
               count_per_page === 1 &&
               current_page === num_pages &&
               current_page > 1
             ) {
-              if (search) {
-                setSearchParams({ page: current_page - 1, search });
-              } else {
-                setSearchParams({ page: current_page - 1 });
-              }
-            } else {
-              fetchData();
+              handleSearchParams(
+                searchParams,
+                setSearchParams,
+                current_page - 1
+              );
+              return;
             }
+
+            fetchData();
           },
         },
       };
@@ -139,15 +144,25 @@ function Crud() {
   };
 
   const goPageOne = () => {
-    let search = searchParams.get("search");
+    handleSearchParams(searchParams, setSearchParams);
+    setError(null);
+  };
 
-    if (search) {
-      setSearchParams({ page: 1, search });
-    } else {
-      setSearchParams({ page: 1 });
+  const renderSearchTableCrud = () => {
+    if (error) {
+      return <ErrorSearch error={error} goPageOne={goPageOne} />;
     }
 
-    setError(null);
+    return (
+      <>
+        <SearchCrud
+          searchP={searchParams.get("search")}
+          setSearchParams={setSearchParams}
+        />
+
+        <TableCrud data={data} setDataToEdit={setDataToEdit} del={del} />
+      </>
+    );
   };
 
   return (
@@ -155,33 +170,7 @@ function Crud() {
       <h2 className="text-center">Crud Empleados</h2>
 
       <div className="table-content">
-        {loader ? (
-          <Loader />
-        ) : error ? (
-          <div className="text-center content-error-image">
-            <img src={error.image} alt={error.alt} />
-
-            <div>
-              <h2>{error.title}</h2>
-              <p>{error.description}</p>
-            </div>
-
-            {error.alt.includes("404") && (
-              <p onClick={goPageOne} className="go-page-one">
-                Volver a la primera página
-              </p>
-            )}
-          </div>
-        ) : (
-          <>
-            <SearchCrud
-              searchP={searchParams.get("search")}
-              setSearchParams={setSearchParams}
-            />
-
-            <TableCrud data={data} setDataToEdit={setDataToEdit} del={del} />
-          </>
-        )}
+        {loader ? <Loader /> : renderSearchTableCrud()}
 
         {data.length > 0 && pagination && (
           <PaginationCrud
@@ -204,6 +193,6 @@ function Crud() {
       />
     </div>
   );
-}
+};
 
 export default Crud;

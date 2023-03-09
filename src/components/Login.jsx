@@ -5,23 +5,29 @@ import { AuthContext } from "../App";
 import LoginSchema from "../schema/LoginSchema";
 import AuthService from "../services/AuthService";
 import Message from "./Message";
+import { redirectToIndex } from "../helpers";
+import { ExclamationCircleFill } from "react-bootstrap-icons";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [message, setMessage] = useState(null);
-  const { auth } = useContext(AuthContext);
+  const navigate = useNavigate(),
+    [message, setMessage] = useState(null),
+    { auth } = useContext(AuthContext);
 
   useEffect(() => {
+    isAuthenticated();
+  }, []);
+
+  const isAuthenticated = () => {
     if (auth) {
-      navigate("/");
+      redirectToIndex(navigate);
     }
-  }, [auth, navigate]);
+  };
 
   const verify = async (values, setSubmitting) => {
     try {
       await AuthService.login(values);
     } catch (error) {
-      let errorMessage = {
+      const errorMessage = {
         message: "✘ Nombre de usuario y/o contraseña incorrectas.",
         className: ["message", "message-error", "message-error-login"],
       };
@@ -76,7 +82,7 @@ const Login = () => {
 
                     {errors.username && (
                       <div className="field-error">
-                        <i className="icon bi bi-exclamation-circle-fill"></i>
+                        <ExclamationCircleFill className="icon" />
                         <span>{errors.username}</span>
                       </div>
                     )}
@@ -95,7 +101,7 @@ const Login = () => {
 
                     {errors.password && (
                       <div className="field-error">
-                        <i className="icon bi bi-exclamation-circle-fill"></i>
+                        <ExclamationCircleFill className="icon" />
                         <span>{errors.password}</span>
                       </div>
                     )}

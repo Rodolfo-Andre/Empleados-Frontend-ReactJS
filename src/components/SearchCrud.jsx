@@ -4,7 +4,7 @@ import { Search, TrashFill } from "react-bootstrap-icons";
 const initialSearch = "";
 
 const SearchCrud = ({ searchP, setSearchParams }) => {
-  const [search, setSearch] = useState(searchP ? searchP : initialSearch);
+  const [search, setSearch] = useState(searchP ?? initialSearch);
 
   const handleOnClick = () => {
     if (search.trim() !== "" && search !== searchP) {

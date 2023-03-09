@@ -16,11 +16,11 @@ export default class AuthService {
   };
 
   static verifyToken = async () => {
-    let token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token");
 
     if (token) {
       try {
-        let response = await axiosObject.post("api/token/verify/", {
+        const response = await axiosObject.post("api/token/verify/", {
           token,
         });
 

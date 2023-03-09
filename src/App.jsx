@@ -6,13 +6,12 @@ import Welcome from "./components/Welcome";
 const AuthContext = createContext();
 
 function App() {
-  const href = useHref();
-  const isAuth = useLoaderData();
-  const [auth, setAuth] = useState(isAuth);
-  const data = { auth, setAuth };
+  const href = useHref(),
+    isAuth = useLoaderData(),
+    [auth, setAuth] = useState(isAuth);
 
   return (
-    <AuthContext.Provider value={data}>
+    <AuthContext.Provider value={Object({ auth, setAuth })}>
       {href !== "/login" && <Header />}
       <main>{href === "/" ? <Welcome /> : <Outlet />}</main>
     </AuthContext.Provider>

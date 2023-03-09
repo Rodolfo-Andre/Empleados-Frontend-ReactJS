@@ -2,7 +2,11 @@ import { useFormik } from "formik";
 import { useEffect } from "react";
 import Employee from "../class/Employee";
 import CrudSchema from "../schema/CrudSchema";
-import { PersonFillAdd, Trash2Fill } from "react-bootstrap-icons";
+import {
+  PersonFillAdd,
+  Trash2Fill,
+  ExclamationCircleFill,
+} from "react-bootstrap-icons";
 
 const initialValues = {
   first_name: "",
@@ -13,27 +17,27 @@ const initialValues = {
 
 const FormCrud = ({ post, put, dataToEdit, setDataToEdit }) => {
   const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: CrudSchema,
-    validateOnChange: false,
-    validateOnBlur: false,
-    onSubmit: (values) => {
-      let employee = new Employee(values);
+      initialValues: initialValues,
+      validationSchema: CrudSchema,
+      validateOnChange: false,
+      validateOnBlur: false,
+      onSubmit: (values) => {
+        const employee = new Employee(values);
 
-      if (dataToEdit) {
-        employee.id = dataToEdit.id;
+        if (dataToEdit) {
+          employee.id = dataToEdit.id;
 
-        put(employee);
+          put(employee);
 
-        setDataToEdit(null);
-      } else {
-        post(employee);
-      }
+          setDataToEdit(null);
+        } else {
+          post(employee);
+        }
 
-      formik.resetForm();
-    },
-  });
-  const setValuesToFormik = formik.setValues;
+        formik.resetForm();
+      },
+    }),
+    setValuesToFormik = formik.setValues;
 
   useEffect(() => {
     if (dataToEdit) {
@@ -72,7 +76,7 @@ const FormCrud = ({ post, put, dataToEdit, setDataToEdit }) => {
 
             {formik.errors.first_name && (
               <div className="field-error">
-                <i className="icon bi bi-exclamation-circle-fill"></i>
+                <ExclamationCircleFill className="icon" />
                 <span>{formik.errors.first_name}</span>
               </div>
             )}
@@ -91,7 +95,7 @@ const FormCrud = ({ post, put, dataToEdit, setDataToEdit }) => {
 
             {formik.errors.last_name && (
               <div className="field-error">
-                <i className="icon bi bi-exclamation-circle-fill"></i>
+                <ExclamationCircleFill className="icon" />
                 <span>{formik.errors.last_name}</span>
               </div>
             )}
@@ -110,7 +114,7 @@ const FormCrud = ({ post, put, dataToEdit, setDataToEdit }) => {
 
             {formik.errors.salary && (
               <div className="field-error">
-                <i className="icon bi bi-exclamation-circle-fill"></i>
+                <ExclamationCircleFill className="icon" />
                 <span>{formik.errors.salary}</span>
               </div>
             )}
@@ -129,7 +133,7 @@ const FormCrud = ({ post, put, dataToEdit, setDataToEdit }) => {
 
             {formik.errors.date_of_birth && (
               <div className="field-error">
-                <i className="icon bi bi-exclamation-circle-fill"></i>
+                <ExclamationCircleFill className="icon" />
                 <span>{formik.errors.date_of_birth}</span>
               </div>
             )}

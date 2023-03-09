@@ -1,8 +1,8 @@
 import { PencilSquare, TrashFill } from "react-bootstrap-icons";
 
 const TableRowCrud = ({ employee, setDataToEdit, del }) => {
-  let { first_name, last_name, date_of_birth, salary } = employee.getData();
-  let id = employee.id;
+  const { first_name, last_name, date_of_birth, salary } = employee.getData(),
+    id = employee.id;
 
   return (
     <tr>
